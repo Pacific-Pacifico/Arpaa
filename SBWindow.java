@@ -1,15 +1,19 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.*;
 
-class SBFrame extends JFrame implements ActionListener
+class SBFrame extends JFrame implements ActionListener,ListSelectionListener
 {
 	Container c;
 	JLabel l_sb;
 	JButton block,unblock,unblockAll,apply,cancel;
 	JScrollPane sp;
+	JList<String> list;
 	DefaultListModel<String> l1;
 	
 	public SBFrame()
@@ -22,11 +26,11 @@ class SBFrame extends JFrame implements ActionListener
 		l_sb.setFont(new Font("Courier New", Font.BOLD, 25));
 
 		l1 = new DefaultListModel<>();  //list  
-		l1.addElement("Item1");  
-		l1.addElement("Item2");  
+		l1.addElement("www.facebook.com");  
+		l1.addElement("www.instagram.com");  
 		l1.addElement("Item3");  
 		l1.addElement("Item4");  
-		JList<String> list = new JList<>(l1);  
+		list = new JList<>(l1);  
 		list.setBounds(100,100,250,300);
 		sp=new JScrollPane(list);  //scrollpane
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -40,6 +44,10 @@ class SBFrame extends JFrame implements ActionListener
 		apply=new JButton("Apply");
 		cancel=new JButton("Cancel");
 
+		unblock.setEnabled(false);
+		apply.setEnabled(false);
+		cancel.setEnabled(false);
+		
 		windowSetter();
 		boundSetter();
 		componentsAdder();
@@ -51,25 +59,40 @@ class SBFrame extends JFrame implements ActionListener
 		if(e.getSource()==block)
 		{
 			String input=JOptionPane.showInputDialog(this,"Enter the Website Address");
-			if(input!=null)
+			if(input!=null && !input.isEmpty())
 			{
 				l1.addElement(input);
+				apply.setEnabled(true);
+				cancel.setEnabled(true);
+				block.setEnabled(true);
 			}
 			//dispose();
 		}
 		if(e.getSource()==unblock)
 		{
-//			l1.removeElement()
+			l1.removeElementAt(list.getSelectedIndex());
+			apply.setEnabled(true);
+			cancel.setEnabled(true);
+			block.setEnabled(true);
 			//dispose();
 		}
 		if(e.getSource()==unblockAll)
 		{
-
+			l1.clear();
+			apply.setEnabled(true);
+			cancel.setEnabled(true);
+			block.setEnabled(true);
 			//dispose();
 		}
 		if(e.getSource()==apply)
 		{
-
+			String[] urls=new String[l1.getSize()];
+			for(int i=0;i<l1.getSize();i++)
+			{
+				urls[i]=l1.getElementAt(i);
+			}
+			new blocker.SiteBlocker(urls);
+			JOptionPane.showMessageDialog(this, "done!");
 			//dispose();
 		}
 		if(e.getSource()==cancel)
@@ -77,10 +100,18 @@ class SBFrame extends JFrame implements ActionListener
 			dispose();
 		}
 	}
+	
+	public void valueChanged(ListSelectionEvent e)
+	{
+		if(e.getSource()==list)
+		{
+			unblock.setEnabled(true);
+			block.setEnabled(false);
+		}
+	}
 
 	void boundSetter()
 	{
-
 		block.setBounds(500,100,200,70);
 		unblock.setBounds(500,200,200,70);
 		unblockAll.setBounds(500,300,200,70);
@@ -116,6 +147,8 @@ class SBFrame extends JFrame implements ActionListener
 		unblockAll.addActionListener(this);
 		apply.addActionListener(this);
 		cancel.addActionListener(this);
+		
+		list.addListSelectionListener(this);
 	}
 }
 
