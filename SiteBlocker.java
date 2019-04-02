@@ -139,8 +139,16 @@ public class SiteBlocker
 	public static void main(String[] args) 
 	{
 		SiteBlocker sb= new SiteBlocker();
-//		sb.blockSite("www.instagram.com","www.facebook.com");
-		sb.hostsFileCopy();
-//		sb.hostsFileOriginal();
+//		sb.hostsFileCopy();
+		sb.hostsFileOriginal();
+		sb.blockSite("www.instagram.com","www.facebook.com");
+	}
+	
+	public SiteBlocker(String... urls) 
+	{
+		SiteBlocker sb= new SiteBlocker();
+//		sb.hostsFileCopy();
+		sb.hostsFileOriginal();
+		sb.blockSite(urls);
 	}
 }
