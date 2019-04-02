@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 //import javax.swing.JScrollPane;
 
-class MainFrame extends JFrame implements ActionListener
+class MainFrame extends JFrame implements ActionListener,ItemListener
 {
 	Container c;
 	  JMenu menu,menu1,menu2,menu3;
@@ -50,6 +50,10 @@ class MainFrame extends JFrame implements ActionListener
 		stop=new JRadioButton("Suspend");
 		stop.setBounds(600, 15,80, 20);
 		p2.add(stop);
+		run.setSelected(true);
+		run.addItemListener(this);
+		stop.addItemListener(this);
+		
 		
 		ButtonGroup grp=new ButtonGroup();
 		grp.add(run);
@@ -100,6 +104,26 @@ class MainFrame extends JFrame implements ActionListener
 		//	new tablewin();
 			//dispose();
 		}
+	}
+	
+	public void itemStateChanged(ItemEvent e)
+	{
+		if(e.getSource()==run)
+		{
+			System.out.println("Clicked run");
+			p2.setBackground(Color.green);
+		//	new tablewin();
+			//dispose();
+		}
+		if(e.getSource()==stop)
+		{
+			System.out.println("Clicked stop");
+			p2.setBackground(Color.red);
+		//	new tablewin();
+			//dispose();
+		}
+		
+		
 	}
 	
 	void boundSetter()
