@@ -8,28 +8,66 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-class PBFrame extends JFrame implements ActionListener,ListSelectionListener
+class PBFrame extends JFrame implements ActionListener,ListSelectionListener,ItemListener
 {
 	Container c;
-	JLabel l_sb;
+	JLabel l_sb,l2,l3;		
+	JPanel p1,p2;	
+	JRadioButton run,stop;
 	JButton block,unblock,unblockAll,apply,cancel;
 	JScrollPane sp;
 	JList<String> list;
 	DefaultListModel<String> l1;
 	String fileName;
 	LogOperations lo;
-	
+
 	public PBFrame()
 	{
 		c=this.getContentPane();
 		c.setLayout(null);
 
-		l_sb=new JLabel("Program BLOCKER");
-		l_sb.setBounds(270,15, 300, 50);
+		p1=new JPanel();	
+		p1.setLayout(null);	
+		p1.setBounds(0, 0, 800,50);	
+		p1.setBackground(Color.blue);
+
+		l_sb=new JLabel("PROGRAM BLOCKER");
+		l_sb.setBounds(270,5, 300, 30);
 		l_sb.setFont(new Font("Courier New", Font.BOLD, 25));
 
-		l1 = new DefaultListModel<>();  //list  
-		
+		p1.add(l_sb);	
+
+		p2=new JPanel();	
+		p2.setLayout(null);	
+		p2.setBounds(0, 50,800,45);	
+		p2.setBackground(Color.green);	
+
+		l2=new JLabel("STATUS :");	
+		l2.setBounds(70,15, 100, 20);	
+		p2.add(l2);	
+		l3=new JLabel("RUNNING..");	
+		l3.setBounds(130,15, 100, 20);	
+		p2.add(l3);	
+
+		run=new JRadioButton("Run");	
+		run.setBounds(500, 15, 50, 20);	
+		p2.add(run);	
+
+		stop=new JRadioButton("Suspend");	
+		stop.setBounds(600, 15,80, 20);	
+		p2.add(stop);	
+
+		run.setSelected(true);	
+		run.addItemListener(this);	
+		stop.addItemListener(this);	
+
+
+		ButtonGroup grp=new ButtonGroup();	
+		grp.add(run);	
+		grp.add(stop);	
+
+		l1 = new DefaultListModel<>();  //list    
+
 		fileName="C:\\Users\\Public\\Arpaa\\Logs\\pb.txt";
 		lo=new LogOperations();
 		ArrayList<String> str=lo.readFromFile(fileName);
@@ -55,7 +93,7 @@ class PBFrame extends JFrame implements ActionListener,ListSelectionListener
 		unblock.setEnabled(false);
 		apply.setEnabled(false);
 		cancel.setEnabled(false);
-		
+
 		windowSetter();
 		boundSetter();
 		componentsAdder();
@@ -103,7 +141,7 @@ class PBFrame extends JFrame implements ActionListener,ListSelectionListener
 			JOptionPane.showMessageDialog(this, "done!");
 			dispose();
 			new blocker.ProgramsBlocker(1000,programs);
-		
+
 			//dispose();
 		}
 		if(e.getSource()==cancel)
@@ -111,7 +149,25 @@ class PBFrame extends JFrame implements ActionListener,ListSelectionListener
 			dispose();
 		}
 	}
-	
+
+	public void itemStateChanged(ItemEvent e)	
+	{	
+		if(e.getSource()==run)	
+		{	
+			//			System.out.println("Clicked run");	
+			p2.setBackground(Color.green);	
+			l3.setText("RUNNING..");
+			//dispose();	
+		}	
+		if(e.getSource()==stop)	
+		{	
+			//			System.out.println("Clicked run");	
+			p2.setBackground(Color.red);	
+			l3.setText("SUSPENDED..");	
+			//dispose();	
+		}	
+	}	
+
 	public void valueChanged(ListSelectionEvent e)
 	{
 		if(e.getSource()==list)
@@ -141,8 +197,12 @@ class PBFrame extends JFrame implements ActionListener,ListSelectionListener
 	}
 
 	void componentsAdder()
-	{
+	{	
+		c.add(p1);			
+		c.add(p2);	
+
 		c.add(l_sb);
+
 		c.add(block);
 		c.add(unblock);
 		c.add(unblockAll);
@@ -157,7 +217,7 @@ class PBFrame extends JFrame implements ActionListener,ListSelectionListener
 		unblockAll.addActionListener(this);
 		apply.addActionListener(this);
 		cancel.addActionListener(this);
-		
+
 		list.addListSelectionListener(this);
 	}
 }
@@ -169,3 +229,6 @@ public class PBWindow
 		PBFrame ob=new PBFrame();
 	}
 }
+
+
+
