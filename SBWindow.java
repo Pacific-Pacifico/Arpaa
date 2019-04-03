@@ -7,10 +7,12 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 
-class SBFrame extends JFrame implements ActionListener,ListSelectionListener
+class SBFrame extends JFrame implements ActionListener,ListSelectionListener,ItemListener
 {
 	Container c;
-	JLabel l_sb;
+	JLabel l_sb,l_bimg,l2,l3;
+	JRadioButton run,stop;
+	JPanel p1,p2;
 	JButton block,unblock,unblockAll,apply,cancel;
 	JScrollPane sp;
 	JList<String> list;
@@ -20,18 +22,55 @@ class SBFrame extends JFrame implements ActionListener,ListSelectionListener
 	{
 		c=this.getContentPane();
 		c.setLayout(null);
-
+		
+		p1=new JPanel();
+		p1.setLayout(null);
+		p1.setBounds(0, 0, 800,50);
+		p1.setBackground(Color.blue);
+		
+		
 		l_sb=new JLabel("SITE BLOCKER");
 		l_sb.setBounds(270,15, 300, 20);
-		l_sb.setFont(new Font("Courier New", Font.BOLD, 25));
-
+		l_sb.setFont(new Font("Courier New", Font.BOLD,30));
+		p1.add(l_sb);
+		
+		p2=new JPanel();
+		p2.setLayout(null);
+		p2.setBounds(0, 50,800,45);
+		p2.setBackground(Color.green);
+		
+		l2=new JLabel("STATUS :");
+		l2.setBounds(70,15, 100, 20);
+		p2.add(l2);
+		l3=new JLabel("RUNNING..");
+		l3.setBounds(130,15, 100, 20);
+		p2.add(l3);
+		
+		run=new JRadioButton("Run");
+		run.setBounds(500, 15, 50, 20);
+		p2.add(run);
+		
+		stop=new JRadioButton("Suspend");
+		stop.setBounds(600, 15,80, 20);
+		p2.add(stop);
+		
+		run.setSelected(true);
+		run.addItemListener(this);
+		stop.addItemListener(this);
+		
+		
+		ButtonGroup grp=new ButtonGroup();
+		grp.add(run);
+		grp.add(stop);
+		
+		
 		l1 = new DefaultListModel<>();  //list  
 		l1.addElement("www.facebook.com");  
 		l1.addElement("www.instagram.com");  
 		l1.addElement("Item3");  
 		l1.addElement("Item4");  
 		list = new JList<>(l1);  
-		list.setBounds(100,100,250,300);
+		list.setBounds(200,100,250,300);
 		sp=new JScrollPane(list);  //scrollpane
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -54,6 +93,25 @@ class SBFrame extends JFrame implements ActionListener,ListSelectionListener
 		eventSetter();
 	}
 
+	public void itemStateChanged(ItemEvent e)
+	{
+		if(e.getSource()==run)
+		{
+			System.out.println("Clicked run");
+			p2.setBackground(Color.green);
+		//	new tablewin();
+			//dispose();
+		}
+		if(e.getSource()==stop)
+		{
+			System.out.println("Clicked run");
+			p2.setBackground(Color.red);
+			l3.setText("Stoped..");
+		//	new tablewin();
+			//dispose();
+		}
+		
+	}
 	public void actionPerformed(ActionEvent e)
 	{
 		if(e.getSource()==block)
@@ -91,7 +149,7 @@ class SBFrame extends JFrame implements ActionListener,ListSelectionListener
 			{
 				urls[i]=l1.getElementAt(i);
 			}
-			new blocker.SiteBlocker(urls);
+			//new blocker.SiteBlocker(urls);
 			JOptionPane.showMessageDialog(this, "done!");
 			//dispose();
 		}
@@ -131,8 +189,9 @@ class SBFrame extends JFrame implements ActionListener,ListSelectionListener
 
 	void componentsAdder()
 	{
-		c.add(l_sb);
-
+		//c.add(l_sb);
+		c.add(p1);
+		c.add(p2);
 		c.add(block);
 		c.add(unblock);
 		c.add(unblockAll);
